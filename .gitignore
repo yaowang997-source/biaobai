@@ -1,0 +1,6 @@
+*.py
+__pycache__/
+*.sh
+.token
+*.txt
+deploy.py

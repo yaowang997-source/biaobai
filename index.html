@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>✦ 给你的一封信 ✦</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a1a;font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-tap-highlight-color:transparent}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+#stage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;width:88%;max-width:380px;text-align:center}
+.line{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;margin:6px 0;color:#d4d4e8;font-size:17px;line-height:1.8}
+.line.show{opacity:1;transform:translateY(0)}
+.line.pink{color:#f0a8c8}
+.line.gold{color:#f5c070}
+.line.dim{color:#887;font-size:15px}
+.line.cyan{color:#8cc8d8}
+.line.magenta{color:#c8b8e8}
+.line.big{font-size:22px;margin:14px 0}
+.line.huge{font-size:30px;font-weight:bold;margin:18px 0}
+#hint{position:fixed;bottom:60px;left:0;width:100%;text-align:center;z-index:99;color:rgba(255,255,255,.35);font-size:14px;display:none}
+#hint.show{display:block;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:.8}}
+.heart-wrap{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2}
+.heart-wrap svg{width:min(240px,60vw);animation:beat .7s ease-in-out infinite alternate;filter:drop-shadow(0 0 30px rgba(255,100,150,.5))}
+@keyframes beat{from{transform:scale(.85)}to{transform:scale(1.1)}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="stage"></div>
+<div id="hint">✦ 轻触屏幕继续 ✦</div>
+
+<script>
+const stage=document.getElementById('stage');
+const hint=document.getElementById('hint');
+
+// ── Canvas ────────────────────────────────────
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W,H;
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+rs();addEventListener('resize',rs);
+
+const stars=Array.from({length:150},()=>({
+  x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,
+  b:Math.random(),s:Math.random()*.02+.005,ph:Math.random()*6.28
+}));
+let shooter=null;
+function ns(){shooter={x:Math.random()*W*.8+W*.1,y:Math.random()*H*.3,vx:(Math.random()>.5?1:-1)*(Math.random()*2+1.5),vy:Math.random()*1.2+.5,trail:[],len:16+Math.random()*10|0,life:30+Math.random()*25|0,age:0}}
+function draw(){
+  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
+  stars.forEach(s=>{
+    s.b+=Math.sin(s.ph)*.02;s.ph+=s.s;s.b=Math.max(.1,Math.min(1,s.b));
+    ctx.fillStyle=`rgba(${255*s.b|0},${230*s.b|0},${255*s.b|0},${s.b})`;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();
+  });
+  if(shooter){shooter.age++;shooter.x+=shooter.vx;shooter.y+=shooter.vy;shooter.trail.unshift({x:shooter.x,y:shooter.y});if(shooter.trail.length>shooter.len)shooter.trail.pop();if(shooter.age>shooter.life||shooter.y>H||shooter.x<0||shooter.x>W)shooter=null}
+  if(!shooter&&Math.random()<.008)ns();
+  if(shooter)shooter.trail.forEach((p,i)=>{const a=1-i/shooter.len;ctx.fillStyle=`rgba(${180*a+75|0},${180*a+75|0},255,${a})`;ctx.beginPath();ctx.arc(p.x,p.y,2.5*(1-i/shooter.len)+.5,0,6.28);ctx.fill()});
+  requestAnimationFrame(draw);
+}draw();
+
+// ── Petals ────────────────────────────────────
+const pc='*✦✿❀♥♡•✧✽❋';
+setInterval(()=>{
+  if(document.querySelectorAll('.petal').length>30)return;
+  if(Math.random()>.4)return;
+  const e=document.createElement('div');
+  e.className='petal';e.textContent=pc[Math.random()*pc.length|0];
+  e.style.cssText=`position:fixed;z-index:1;pointer-events:none;left:${Math.random()*90+5}%;top:-5%;font-size:${Math.random()*14+14}px;color:${['#f0a8c8','#ffb3c6','#ffc2d9','#f8d5e0'][Math.random()*4|0]};animation:fall ${Math.random()*6+6}s linear forwards`;
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),14000);
+},350);
+const s=document.createElement('style');
+s.textContent='@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0deg)}70%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(720deg)}}';
+document.head.appendChild(s);
+
+// ── Scenes ────────────────────────────────────
+const scenes=[
+  [{t:'其实我也不知道',c:'dim'},{t:'该怎么开口说这些话。',c:'dim',w:1800},{t:'但还是想让你知道——',c:'cyan',w:1200}],
+  [{t:'我发现自己越来越期待',c:''},{t:'收到你的消息。',c:'pink',w:1600},{t:'哪怕只是一句「在干嘛」',c:''},{t:'也能让我对着屏幕笑半天。',c:'pink',w:2000}],
+  [{t:'我开始注意到很多',c:'cyan'},{t:'以前不会在意的事：',c:'',w:1400},{t:'你爱喝几分糖的奶茶',c:''},{t:'你笑起来有个浅浅的酒窝',c:'pink',w:2200}],
+  [{t:'跟你一起的时候',c:'gold'},{t:'时间总是过得特别快',c:'gold',w:1600},{t:'说的话都很普通',c:''},{t:'但就是想跟你分享。',c:'pink',w:2200}],
+  [{t:'我也有过很多犹豫。',c:'dim',w:1400},{t:'怕说出来连朋友都做不成。',c:'dim'},{t:'怕你觉得我自作多情。',c:'dim',w:1800}],
+  [{t:'把这些话在对话框里',c:''},{t:'打了又删、删了又打。',c:'',w:2000},{t:'但这次我不想再删了。',c:'magenta big',w:2000}],
+  [{t:'',c:'',w:400},{t:'我想认真地告诉你：',c:'magenta',w:1200},{t:'',c:'',w:300},{t:'我喜欢你。',c:'pink huge',w:2800}],
+  [{t:'不是一时兴起，',c:''},{t:'是想了很久很久之后，',c:''},{t:'还是觉得很确定的那种。',c:'pink',w:2200},{t:'你愿意，做我女朋友吗？',c:'gold big',w:3000}],
+  [{type:'h'}],
+  [{t:'你不用现在就回答我，',c:'dim',w:1200},{t:'我只是想让你知道——',c:'',w:800},{t:'有一个人，',c:'cyan'},{t:'真的很喜欢你。',c:'pink big',w:2400},{t:'谢谢你出现在我的生活里。',c:'gold',w:2000}],
+];
+
+let si=0,li=0,busy=false,timer=null;
+
+function clearAll(){
+  stage.innerHTML='';
+  hint.classList.remove('show');
+  const h=document.querySelector('.heart-wrap');if(h)h.remove();
+}
+
+function showLine(){
+  const scene=scenes[si];
+  if(li>=scene.length){
+    busy=false;
+    if(si===8){si++;showScene();return}
+    hint.classList.add('show');
+    return;
+  }
+  const l=scene[li++];
+  if(l.type==='h'){
+    const wrap=document.createElement('div');
+    wrap.className='heart-wrap';
+    wrap.innerHTML='<svg viewBox="0 0 100 90"><path d="M50 85 C25 60,0 45,0 25 C0 10,12 0,25 0 C35 0,45 10,50 18 C55 10,65 0,75 0 C88 0,100 10,100 25 C100 45,75 60,50 85Z" fill="#ff6b8a"/></svg>';
+    document.body.appendChild(wrap);
+    timer=setTimeout(()=>{wrap.remove();li=0;si++;if(si<scenes.length)showScene()},4000);
+    return;
+  }
+  const el=document.createElement('div');
+  el.className='line';
+  if(l.c)el.className+=' '+l.c;
+  el.textContent=l.t;
+  stage.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  timer=setTimeout(showLine,l.w||(l.t.trim()?l.t.length*65+400:300));
+}
+
+function showScene(){
+  if(si>=scenes.length){hint.classList.remove('show');return}
+  clearAll();li=0;busy=true;showLine();
+}
+
+document.addEventListener('click',()=>{
+  if(busy)return;
+  if(timer)clearTimeout(timer);
+  hint.classList.remove('show');
+  si++;
+  if(si>=scenes.length){hint.classList.remove('show');return}
+  showScene();
+});
+
+showScene(0);
+</script>
+</body>
+</html>
