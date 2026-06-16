@@ -35,7 +35,7 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background:t
 // ── BGM: use external audio file ──────────────────
 // Replace SRC below with your own audio URL
 const bgm=document.createElement('audio');
-bgm.src=''; // ← 把你的音乐链接放这里
+bgm.src='bgm.mp3';
 bgm.loop=true;bgm.volume=0.3;
 function startBGM(){bgm.play().catch(()=>{})}
 
