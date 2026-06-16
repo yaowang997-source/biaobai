@@ -32,37 +32,12 @@ canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background:t
 <div id="hint">✦ 轻触屏幕继续 ✦</div>
 
 <script>
-// ── BGM: gentle ambient drone ──────────────────
-let audioCtx=null;
-function startBGM(){
-  if(audioCtx)return;
-  audioCtx=new AudioContext();
-  const now=audioCtx.currentTime;
-  // Single soft pad tone with slow filter sweep
-  const g=audioCtx.createGain();
-  g.gain.setValueAtTime(0,now);
-  g.gain.linearRampToValueAtTime(0.04,now+2);
-  
-  const lp=audioCtx.createBiquadFilter();
-  lp.type='lowpass';lp.frequency.setValueAtTime(300,now);
-  lp.frequency.linearRampToValueAtTime(800,now+4);
-  lp.frequency.linearRampToValueAtTime(400,now+8);
-  lp.Q.setValueAtTime(2,now);
-  
-  const o=audioCtx.createOscillator();
-  o.type='triangle';o.frequency.setValueAtTime(110,now); // A2
-  o.connect(lp);lp.connect(g);g.connect(audioCtx.destination);
-  o.start(now);
-  
-  // Subtle harmonic
-  const g2=audioCtx.createGain();
-  g2.gain.setValueAtTime(0,now);
-  g2.gain.linearRampToValueAtTime(0.015,now+3);
-  const o2=audioCtx.createOscillator();
-  o2.type='sine';o2.frequency.setValueAtTime(220,now);
-  o2.connect(g2);g2.connect(audioCtx.destination);
-  o2.start(now);
-}
+// ── BGM: use external audio file ──────────────────
+// Replace SRC below with your own audio URL
+const bgm=document.createElement('audio');
+bgm.src=''; // ← 把你的音乐链接放这里
+bgm.loop=true;bgm.volume=0.3;
+function startBGM(){bgm.play().catch(()=>{})}
 
 // ── Canvas ──────────────────────────────────────
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
@@ -151,14 +126,14 @@ function draw(){
 // ── Petals ──────────────────────────────────────
 const pc='*✦✿❀♥♡•✧✽❋';
 setInterval(()=>{
-  if(document.querySelectorAll('.petal').length>35)return;
-  if(Math.random()>.35)return;
+  if(document.querySelectorAll('.petal').length>60)return;
+  if(Math.random()>.6)return;
   const e=document.createElement('div');
   e.className='petal';e.textContent=pc[Math.random()*pc.length|0];
-  e.style.cssText=`position:fixed;z-index:1;pointer-events:none;left:${Math.random()*90+5}%;top:-5%;font-size:${Math.random()*16+12}px;color:${['#f0a8c8','#ffb3c6','#ffc2d9','#f8d5e0','#ffe0ec','#e8d5f5'][Math.random()*6|0]};animation:fall ${Math.random()*7+5}s linear forwards;opacity:${Math.random()*.4+.6}`;
+  e.style.cssText=`position:fixed;z-index:1;pointer-events:none;left:${Math.random()*90+5}%;top:-5%;font-size:${Math.random()*16+12}px;color:${['#f0a8c8','#ffb3c6','#ffc2d9','#f8d5e0','#ffe0ec','#e8d5f5'][Math.random()*6|0]};animation:fall ${Math.random()*7+4}s linear forwards;opacity:${Math.random()*.4+.6}`;
   document.body.appendChild(e);
-  setTimeout(()=>e.remove(),14000);
-},300);
+  setTimeout(()=>e.remove(),13000);
+},200);
 const s=document.createElement('style');
 s.textContent='@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0deg) translateX(0)}70%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(720deg) translateX(30px)}}';
 document.head.appendChild(s);
