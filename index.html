@@ -6,7 +6,7 @@
 <title>✦ 给你的一封信 ✦</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at center,#181840 0%,#0a0a1c 100%);font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at center,#221838 0%,#100c1a 100%);font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-tap-highlight-color:transparent}
 canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background:transparent}
 #stage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;width:88%;max-width:380px;text-align:center}
 .line{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;margin:6px 0;color:#d4d4e8;font-size:17px;line-height:1.8}
@@ -99,10 +99,10 @@ function ns(){shooter={x:Math.random()*W*.8+W*.1,y:Math.random()*H*.35,vx:(Math.
 function draw(){
   // Gradient background
   const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#121238');
-  bg.addColorStop(.3,'#101030');
-  bg.addColorStop(.6,'#0d0d25');
-  bg.addColorStop(1,'#0a0a1c');
+  bg.addColorStop(0,'#1a1228');
+  bg.addColorStop(.3,'#181025');
+  bg.addColorStop(.6,'#140e20');
+  bg.addColorStop(1,'#100c1a');
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   
   // Glow orbs - lighter, more spread out
@@ -112,7 +112,7 @@ function draw(){
     const y=H*(.25+.2*Math.cos(t*.2+i*2));
     const r=100+Math.sin(t*.35+i)*20;
     const g=ctx.createRadialGradient(x,y,0,x,y,r);
-    const hue=[240,270,200,310,225,260][i];
+    const hue=[280,310,340,260,300,330][i];
     g.addColorStop(0,`hsla(${hue},40%,55%,.07)`);
     g.addColorStop(.5,`hsla(${hue},35%,35%,.03)`);
     g.addColorStop(1,'transparent');
@@ -128,10 +128,10 @@ function draw(){
     // Warm white stars - brighter
     ctx.fillStyle=`rgba(${255*a|0},${240*a|0},${225*a|0},${a*.9})`;
     ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();
-    // Glow halo for bright stars
+    // Star halos - smaller
     if(a>.5){
-      ctx.fillStyle=`rgba(255,240,220,${a*.25})`;
-      ctx.beginPath();ctx.arc(s.x,s.y,s.r*4,0,6.28);ctx.fill();
+      ctx.fillStyle=`rgba(255,240,220,${a*.12})`;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r*2,0,6.28);ctx.fill();
     }
   });
   
