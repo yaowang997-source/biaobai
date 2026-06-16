@@ -107,15 +107,16 @@ function draw(){
   bg.addColorStop(1,'#080818');
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   
-  // Glow orbs (simple, visible)
+  // Glow orbs - brighter
   const t=Date.now()/1000;
   for(let i=0;i<4;i++){
     const x=W*(.2+i*.2+.15*Math.sin(t*.3+i));
     const y=H*(.3+.15*Math.cos(t*.25+i*1.8));
-    const r=120+Math.sin(t*.4+i)*30;
+    const r=150+Math.sin(t*.4+i)*40;
     const g=ctx.createRadialGradient(x,y,0,x,y,r);
     const hue=[240,280,200,320][i];
-    g.addColorStop(0,`hsla(${hue},60%,50%,.08)`);
+    g.addColorStop(0,`hsla(${hue},50%,60%,.15)`);
+    g.addColorStop(.4,`hsla(${hue},50%,40%,.08)`);
     g.addColorStop(1,'transparent');
     ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);
   }
@@ -126,13 +127,13 @@ function draw(){
     s.ph+=s.s;
     s.b=Math.max(.05,Math.min(1,s.b));
     const a=s.b;
-    // Warm white stars
-    ctx.fillStyle=`rgba(${255*a|0},${235*a|0},${220*a|0},${a})`;
+    // Warm white stars - brighter
+    ctx.fillStyle=`rgba(${255*a|0},${240*a|0},${225*a|0},${a*.9})`;
     ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();
     // Glow halo for bright stars
-    if(a>.7){
-      ctx.fillStyle=`rgba(255,230,200,${a*.15})`;
-      ctx.beginPath();ctx.arc(s.x,s.y,s.r*3,0,6.28);ctx.fill();
+    if(a>.5){
+      ctx.fillStyle=`rgba(255,240,220,${a*.25})`;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r*4,0,6.28);ctx.fill();
     }
   });
   
